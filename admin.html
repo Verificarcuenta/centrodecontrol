@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Verificaciones</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header"><h2>Panel Admin</h2></header>
+  <div class="container">
+    <div id="loginBox" class="card">
+      <p><strong>Acceso admin</strong></p>
+      <p>Inicia sesión en Firebase Auth con el email admin para ver registros.</p>
+      <button class="big-btn" id="openConsole" onclick="openLogin()">Iniciar sesión (Auth)</button>
+    </div>
+
+    <div id="list"></div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
