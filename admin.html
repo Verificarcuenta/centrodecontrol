@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel Admin • FINCIMEX</title>
+
+<style>
+body{
+  margin:0;
+  padding:0;
+  font-family:"Segoe UI", Arial, sans-serif;
+  background:#00111f url("img/fondo_admin.jpg") no-repeat center/cover;
+  min-height:100vh;
+  color:white;
+  animation:fadeIn 1s ease;
+}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
+.container{
+  width:90%;
+  max-width:1000px;
+  margin:50px auto;
+  background:rgba(0,0,0,0.7);
+  padding:20px;
+  border-radius:15px;
+  backdrop-filter: blur(5px);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:25px;
+  color:#ffd700;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:20px;
+}
+
+th, td{
+  padding:10px;
+  border:1px solid #444;
+  text-align:center;
+}
+
+th{
+  background:#222;
+  color:#ffd700;
+}
+
+tr:nth-child(even){
+  background:rgba(255,255,255,0.05);
+}
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+  font-weight:600;
+}
+
+.aprobar{ background:#28a745; }
+.rechazar{ background:#dc3545; }
+
+select{
+  padding:6px;
+  border-radius:6px;
+  border:none;
+  margin-bottom:15px;
+  font-size:16px;
+}
+
+.logout{
+  background:#666;
+  margin-bottom:15px;
+}
+.logout:hover{background:#444;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Panel de Administración</h1>
+
+  <!-- Botón logout -->
+  <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
+
+  <!-- Filtro por tipo de tarjeta -->
+  <select id="filtro" onchange="cargarDatos()">
+    <option value="">Todos los tipos</option>
+    <option value="CUP">CUP</option>
+    <option value="MLC">MLC</option>
+    <option value="AIS CUP">AIS CUP</option>
+    <option value="AIS USD/MLC">AIS USD/MLC</option>
+  </select>
+
+  <!-- Tabla de registros -->
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+        <th>Provincia</th>
+        <th>Tarjeta</th>
+        <th>Tipo</th>
+        <th>Fotos / Comprobantes</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Datos se cargan aquí -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="js/firebase.js"></script>
+
+<script>
+// ===== Autenticación ADMIN =====
+firebase.auth().onAuthStateChanged(user => {
+  if(!user){
+    window.location.href = "index.html";
+  }
+});
+
+// Cerrar sesión
+function cerrarSesion(){
+  firebase.auth().signOut().then(() => window.location.href="index.html");
+}
+
+// ===== Cargar datos =====
+async function cargarDatos(){
+  const filtro = document.getElementById("filtro").value;
+  const tbody = document.querySelector("#tabla tbody");
+  tbody.innerHTML = "";
+
+  let query = db.collection("verificaciones").orderBy("fecha","desc");
+  if(filtro) query = query.where("tipo","==",filtro);
+
+  const snapshot = await query.get();
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const tr = document.createElement("tr");
+
+    // Fotos / comprobantes
+    let fotos = "";
+    if(data.archivos){
+      for(const key in data.archivos){
+        fotos += `<a href="${data.archivos[key]}" target="_blank">${key}</a><br>`;
+      }
+    }
+
+    const estado = data.estado || "Pendiente";
+
+    tr.innerHTML = `
+      <td>${data.nombre}</td>
+      <td>${data.cedula}</td>
+      <td>${data.telefono}</td>
+      <td>${data.direccion}</td>
+      <td>${data.provincia}</td>
+      <td>${data.tarjeta}</td>
+      <td>${data.tipo}</td>
+      <td>${fotos}</td>
+      <td id="estado-${doc.id}">${estado}</td>
+      <td>
+        <button class="aprobar" onclick="cambiarEstado('${doc.id}','Aprobada')">Aprobar</button>
+        <button class="rechazar" onclick="cambiarEstado('${doc.id}','Rechazada')">Rechazar</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Cambiar estado
+function cambiarEstado(id, estado){
+  db.collection("verificaciones").doc(id).update({estado})
+    .then(() => document.getElementById("estado-"+id).innerText = estado)
+    .catch(err => console.error(err));
+}
+
+// Inicializar tabla
+cargarDatos();
+</script>
+
+</body>
+</html>
