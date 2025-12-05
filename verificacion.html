@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validación de Tarjeta • FINCIMEX</title>
+
+<style>
+body{
+  margin:0;
+  padding:0;
+  font-family:"Segoe UI", Arial, sans-serif;
+  background:#00111f url("fondo2.jpg") no-repeat center center/cover;
+  min-height:100vh;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  animation:fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;} to{opacity:1;}
+}
+
+.contenedor{
+  background:rgba(0,0,0,0.60);
+  padding:40px 25px;
+  border-radius:20px;
+  width:90%;
+  max-width:420px;
+  backdrop-filter: blur(4px);
+  animation:slide 1.2s ease;
+}
+
+@keyframes slide{
+  from{transform:translateY(40px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+.logo{
+  width:110px;
+  margin-bottom:15px;
+}
+
+h2{
+  font-size:26px;
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  font-size:22px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  margin-top:10px;
+  text-align:center;
+  letter-spacing:2px;
+  background:#ffffff15;
+  color:white;
+}
+
+.resultado{
+  margin-top:25px;
+  font-size:26px;
+  font-weight:bold;
+}
+
+.tipo{
+  font-size:20px;
+  margin-top:8px;
+  color:#ffd700;
+}
+
+.boton{
+  background:#00a2ff;
+  padding:14px 35px;
+  border-radius:10px;
+  display:inline-block;
+  margin-top:20px;
+  color:white;
+  font-size:20px;
+  text-decoration:none;
+  transition:0.3s;
+  font-weight:600;
+}
+.boton:hover{
+  background:#007fcc;
+}
+
+footer{
+  margin-top:40px;
+  font-size:14px;
+  color:#f1f1f1;
+}
+</style>
+
+</head>
+<body>
+
+<div class="contenedor">
+  <img src="logo.png" class="logo" alt="FINCIMEX">
+  <h2>Validación de tarjeta</h2>
+
+  <input type="text" id="card" maxlength="16" placeholder="Introduce los 16 dígitos..." oninput="detectar()">
+
+  <div class="resultado" id="resultado"></div>
+  <div class="tipo" id="tipo"></div>
+
+  <a href="#" id="continuar" class="boton" style="display:none;" onclick="goFinal()">Continuar</a>
+</div>
+
+<footer>
+  FINCIMEX • Todos los derechos reservados
+</footer>
+
+<script>
+function detectar(){
+  const num = document.getElementById("card").value;
+  const res = document.getElementById("resultado");
+  const tipo = document.getElementById("tipo");
+  const btn = document.getElementById("continuar");
+
+  res.innerHTML = "";
+  tipo.innerHTML = "";
+  btn.style.display = "none";
+
+  if(num.length < 4) return;
+
+  const prefijo = num.substring(0,4);
+
+  // Validación numérica
+  if(num.length === 16 && !/^\d+$/.test(num)){
+    res.innerHTML = "❌ Solo se permiten números";
+    return;
+  }
+
+  // BANDEC
+  if(["9225","9226","9235","9305"].includes(prefijo)){
+    res.innerHTML = "🏦 Banco: BANDEC";
+    tipo.innerHTML = "Tarjeta CUP / MLC";
+    if(num.length===16) btn.style.display="inline-block";
+    return;
+  }
+
+  // BPA
+  if(["9560","9561","4570"].includes(prefijo)){
+    res.innerHTML = "🏦 Banco: BPA";
+    tipo.innerHTML = "Tarjeta CUP / MLC";
+    if(num.length===16) btn.style.display="inline-block";
+    return;
+  }
+
+  // Banco Metropolitano
+  if(["9203","9204","9205"].includes(prefijo)){
+    res.innerHTML = "🏦 Banco Metropolitano";
+    tipo.innerHTML = "Tarjeta CUP / MLC";
+    if(num.length===16) btn.style.display="inline-block";
+    return;
+  }
+
+  // AIS FINCIMEX
+  if(["9400","9405","9300","9310"].includes(prefijo)){
+    res.innerHTML = "🏦 Tarjeta FINCIMEX (AIS)";
+    tipo.innerHTML = (prefijo==="9400") ? "AIS CUP" : "AIS USD / MLC";
+    if(num.length===16) btn.style.display="inline-block";
+    return;
+  }
+
+  res.innerHTML = "❓ No coincide con tarjetas cubanas";
+}
+
+function goFinal(){
+  window.location.href = "final.html";
+}
+</script>
+
+</body>
+</html>
