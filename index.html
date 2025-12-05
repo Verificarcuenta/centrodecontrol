@@ -1,18 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Verificaciones</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verificación • FINCIMEX</title>
+
+<style>
+body{
+  margin:0;
+  padding:0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:#00111f url("fondo.jpg") no-repeat center center/cover;
+  color:white;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  animation:fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;} to{opacity:1;}
+}
+
+.contenedor{
+  background:rgba(0,0,0,0.55);
+  padding:40px 30px;
+  border-radius:20px;
+  width:85%;
+  max-width:380px;
+  backdrop-filter: blur(4px);
+  animation:slide 1.2s ease;
+}
+
+@keyframes slide{
+  from{transform:translateY(40px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+.logo{
+  width:120px;
+  margin-bottom:20px;
+}
+
+h1{
+  font-size:32px;
+  margin-bottom:25px;
+  font-weight:700;
+}
+
+.boton{
+  background:#007bff;
+  padding:15px 40px;
+  display:inline-block;
+  border-radius:10px;
+  margin-top:10px;
+  text-decoration:none;
+  color:white;
+  font-size:20px;
+  font-weight:600;
+  transition:0.3s;
+}
+.boton:hover{
+  background:#005fcc;
+}
+
+footer{
+  position:absolute;
+  bottom:15px;
+  width:100%;
+  text-align:center;
+  font-size:14px;
+  color:#f1f1f1;
+}
+</style>
+
 </head>
 <body>
-  <main class="wrap">
-    <h1 class="main-title">Selecciona una verificación</h1>
-    <div class="buttons">
-      <a class="big-btn" href="verificar_clasica.html">Verificar Clásica</a>
-      <a class="big-btn" href="verificar_tarjeta.html">Verificar Tarjeta</a>
-    </div>
-  </main>
+
+<div class="contenedor">
+  <img src="logo.png" class="logo" alt="FINCIMEX">
+  <h1>Verificar identidad</h1>
+  <a href="verificacion.html" class="boton">Siguiente</a>
+</div>
+
+<footer>
+  FINCIMEX • Todos los derechos reservados
+</footer>
+
 </body>
 </html>
