@@ -2,35 +2,21 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Verificación • FINCIMEX</title>
-<style>
-body{margin:0;padding:0;font-family:"Segoe UI",Arial,sans-serif;
-  background:#00111f url("img/fondo.jpg") no-repeat center center/cover;
-  color:white;height:100vh;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;text-align:center;animation:fadeIn 1s;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.contenedor{background:rgba(0,0,0,0.55);padding:40px 30px;border-radius:20px;width:85%;max-width:380px;backdrop-filter:blur(4px);animation:slide 1.2s;}
-@keyframes slide{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.logo{width:120px;margin-bottom:20px;}
-h1{font-size:32px;margin-bottom:25px;font-weight:700;}
-.boton{background:#007bff;padding:15px 40px;border-radius:10px;margin-top:10px;color:white;font-size:20px;text-decoration:none;display:inline-block; font-weight:600; transition:.3s;}
-.boton:hover{background:#005fcc;}
-footer{position:absolute;bottom:15px;width:100%;text-align:center;font-size:14px;color:#f1f1f1;}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verificación de Tarjeta</title>
+<link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="contenedor">
-  <img src="img/logo.png" class="logo" alt="FINCIMEX">
-  <h1>Verificar identidad</h1>
-  <a href="verificacion.html" class="boton">Siguiente</a>
-</div>
-<footer>FINCIMEX • Todos los derechos reservados</footer>
 
-<!-- Firebase libs (compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="js/firebase.js"></script>
+<body class="inicio">
+
+<div class="container">
+    <h1 class="titulo">Verificar identidad</h1>
+    <button onclick="location.href='verificar.html'" class="btn">Siguiente</button>
+</div>
+
+<footer>
+    <p>FINCIMEX © Todos los derechos reservados</p>
+</footer>
+
 </body>
 </html>
