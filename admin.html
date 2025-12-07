@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin • Verificaciones</title>
+<link rel="stylesheet" href="styles.css">
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="admin.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Panel Administrador</h1>
+</header>
+
+<main class="admin-main">
+  <section class="login-card" id="loginCard">
+    <h2>Iniciar sesión</h2>
+    <form id="loginForm" class="form-grid">
+      <label for="adminEmail">Email</label>
+      <input id="adminEmail" type="email" required placeholder="admin@ejemplo.com">
+
+      <label for="adminPass">Contraseña</label>
+      <input id="adminPass" type="password" required placeholder="Contraseña">
+
+      <div class="fullwidth">
+        <button class="btn" id="btnLogin" type="submit">Entrar</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="panelCard" class="panel-card hidden">
+    <div class="panel-header">
+      <h2>Verificaciones recibidas</h2>
+      <div>
+        <button class="btn small" id="btnRefresh">Refrescar</button>
+        <button class="btn small danger" id="btnLogout">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <div id="listContainer" class="list-container"></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>FINCIMEX © Todos los derechos reservados</p>
+</footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/5350000000" class="whatsapp-btn" target="_blank" aria-label="Contactar por Whatsapp">💬</a>
+
+</body>
+</html>
